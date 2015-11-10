@@ -22,15 +22,16 @@
 
 
 source("subroutines.R")
+require(MASS)
 
 ##Example Data Set
 random.samples <- 100
 
   sample.size <- 20
-  sigma <- matrix(c(1,.9,.9,1),2,2)
-  a <- rmultnorm(sample.size,c(0,0),sigma)
-  b <- rmultnorm(sample.size,c(0,4),sigma)
-  y <- t(rbind(a,b))
+  sigma <- matrix(c(1, .9, .9, 1), 2, 2)
+  a <- mvrnorm(n=sample.size, mu=c(0,0), Sigma=sigma)
+  b <- mvrnorm(n=sample.size, mu=c(0,4), Sigma=sigma)
+  y <- t(rbind(a, b))
   plot(y[1,],y[2,],xlab="x",ylab="y",type="n")
   text(y[1,],y[2,],labels=as.character(1:(dim(y)[2])))
 
