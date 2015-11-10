@@ -20,6 +20,9 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+## -------------------------------------------------------------------
+## This code was refactored by Zebulun Arendsee <arendsee@iastate.edu>
+
 
 source("subroutines.R")
 require(MASS)
@@ -68,53 +71,51 @@ total.var <- get.var(y[,v])
 #          M  A  I  N     L  O  O  P
 #----------------------------------------------------------------------
 
-for (i in 1:(n-1)) {
+# Choose a metric for comparing within- and between-cluster variances.
+W.metric <- switch(
+    method,
+    function(V) { # 1) Trace
+        sum(diag(V))
+    },
+    function(V) { # 2) Product of singular values
+        sv <- svd(V)$d
+        sum(log(sv[which(sv > sv[1] * 1e-8)]))
+    }
+)
 
-  if ( m[i, 1] < 0 && m[i, 2] < 0 ) {
-    within.var[i] <- 0
-    total.var[i] <- 1  # want the ratio to be 0
-  }
-  else {
-    left.branch <- find.leaves(m,i,1)
+permutation_function <- function(m, i, y, ntrials=100){
+    left.branch  <- find.leaves(m,i,1)
     right.branch <- find.leaves(m,i,2)
-    branch <- c(left.branch,right.branch) 
-    V0  <- get.var(y[,right.branch]) + get.var(y[,left.branch])
-    if (method==1) {
-      V.r0 <- sum(diag(V0)) 
-    }
-    else {
-      sv <- svd(V0)$d
-      V.r0 <- sum(log(sv[which(sv>sv[1]*1e-8)]))
-    }
-    V.r <- rep(0,random.samples)
-    lr <- length(right.branch)
+    branch       <- c(left.branch,right.branch) 
+    V0           <- get.var(y[, right.branch]) + get.var(y[, left.branch])
+    V.r0         <- W.metric(V0)
+    V.r <- replicate(ntrials, { 
+        v1 <- sample(branch, length(right.branch))
+        V0 <- get.var(y[,v1]) + get.var(y[, setdiff(branch,v1)])
+        W.metric(V0)
+    })
+    sum(V.r <= V.r0) / length(V.r)
+}
 
-    for (j in 1:random.samples) { 
-      v1 <- sample(branch,lr)
-      V0 <- get.var(y[,v1]) + get.var(y[,setdiff(branch,v1)])
-
-      if (method==1) {
-        V.r[j] <- sum(diag(V0))
-      }
-      else {
-        sv <- svd(V0)$d
-        V.r[j] <- sum(log(sv[which(sv>sv[1]*1e-8)]))
-      }
+for (i in 1:(n-1)) {
+    if ( m[i, 1] < 0 && m[i, 2] < 0 ) {
+        within.var[i] <- 0
+        total.var[i] <- 1  # want the ratio to be 0
+    } else {
+        pv[i] <- permutation_function(m, i, y, ntrials=random.samples)
+        cat("i = ", i, " p.values = ", pv[i], "\n")
     }
-    pv[i] <- sum(V.r <= V.r0) /length(V.r)
-    cat("i = ",i," p.values = ",pv[i],"\n")
-  }
 }
 
 
 #----------------------------------------------------------------------
 # plot the dendrogram and p-values
 #----------------------------------------------------------------------
-plclust(hcl,axes=F,xlab="",ylab=NULL,ann=F,labels=FALSE)
-h.inc <- max(hcl$height)/n
+plot(hcl, axes=TRUE, xlab="", ylab=NULL, ann=FALSE)
+h.inc <- max(hcl$height) / n
 for (i in 1:(n-1)) {
   if (m[i,1]>0 || m[i,2]>0) {
-    text(x.c[i]+1.2,hcl$h[i]+h.inc,pv[i],cex=.7)
+    text(x.c[i] + 1.2, hcl$h[i] + h.inc, pv[i], cex=.7)
   }
 }
 
@@ -124,19 +125,15 @@ for (i in 1:(n-1)) {
 #----------------------------------------------------------------------
 
 hcl1 <- hcl
-pv.cutoff <- .05/(n-1)
+pv.cutoff <- 0.05 / (n-1)
 #pv.cutoff <- .005
 for (i in 1:length(hcl1$height)) {
-  if (pv[i]>pv.cutoff) {
-    v <- c(i,find.nodes(hcl1$merge,i,pv.cutoff))
+  if (pv[i] > pv.cutoff) {
+    v <- c(i, find.nodes(hcl1$merge, i, pv.cutoff))
     for (j in 1:length(v)) {
       hcl1$height[v[j]] <- min(hcl1$height[v])
     }
   }
 }
 
-plot(hcl1,axes=T,xlab="",ylab=NULL,ann=F)
-
-
-
-
+plot(hcl1, axes=TRUE, xlab="", ylab=NULL, ann=FALSE)
