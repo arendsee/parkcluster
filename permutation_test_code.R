@@ -35,7 +35,7 @@ random.samples <- 100
   plot(y[1,],y[2,],xlab="x",ylab="y",type="n")
   text(y[1,],y[2,],labels=as.character(1:(dim(y)[2])))
 
-  plclust(hclust(dist(t(y)),method="ave"))
+  plot(hclust(dist(t(y)),method="ave"))
 #----------------------------------------------------------------------
 
 num.genes <- dim(y)[1]      # each row is for a gene
