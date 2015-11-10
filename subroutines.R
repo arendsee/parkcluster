@@ -43,70 +43,43 @@ get.coord <- function(m,v,x.coord,n) {
 
 find.leaves <- function (tree,i,side) {
 
-  v <- tree[i,side]
-  j <- 1
-  l <- 1
+    v <- tree[i,side]
+    j <- 1
+    l <- 1
 
-  while (j <= l) {
-
-    if (v[j]<0) { j <- j+1 }  # branch ends; move on
-
-    else {  # add a lower branch
-      if (j<l) { 
-	v[(j+2):(l+1)] <- v[(j+1):l]  # move over to make room 
-      }
-      v[j:(j+1)] <- tree[v[j],]  # put the new branch
+    while (j <= l) {
+        if (v[j] < 0) { # branch ends; move on
+            j <- j+1
+        } 
+        else { # add a lower branch
+            if (j < l) { 
+                v[(j+2):(l+1)] <- v[(j+1):l]  # move over to make room 
+            }
+            v[j:(j+1)] <- tree[v[j],]  # put the new branch
+        }
+        l <- length(v)
     }
-    l <- length(v)
-  }
-  return (-v)  # negative number should now be inverted
+    return (-v)  # negative number should now be inverted
 }
 
 #----------------------------------------------------------------------
 find.nodes <- function(tree,i,pv.cutoff) {
-  v <- tree[i,]
-  j <- 1
-  l <- 2
-  while (j<=l){
-    if ((v[j]>0)&&(pv[v[j]]>pv.cutoff)) {
-      v <- c(v,tree[v[j],])
+    v <- tree[i,]
+    j <- 1
+    l <- 2
+    while (j<=l){
+        if ((v[j] > 0) && (pv[v[j]] > pv.cutoff)) {
+            v <- c(v,tree[v[j],])
+        }
+        j <- j+1
+        l <- length(v)
     }
-    j <- j+1
-    l <- length(v)
-  }
-  return (v[v>0])
+    return (v[v>0])
 }
 
 #----------------------------------------------------------------------
 get.var <- function (y1) {
-  mu <- if(!is.matrix(y1)) y1 else rowMeans(y1)
-  y1.var <- (y1 - mu) %*% t(y1 - mu)
-  y1.var
+    mu <- if(!is.matrix(y1)) y1 else rowMeans(y1)
+    y1.var <- (y1 - mu) %*% t(y1 - mu)
+    y1.var
 }
-
-#----------------------------------------------------------------------
-# old version used this subroutine to divide the samples.  this works
-# only with the way that the sampling was done before, with the
-# subsample in the same order as the sample
-# NOT USED ANYMORE
-take.out <- function (vec, subvec) {
-  l <- length(vec)
-  for ( i in 1:length(subvec) ) {
-    index <- (1:l)[vec==subvec[i]]
-    vec[index:(l-1)] <- vec[(index+1):l]
-    vec[l] <- 0
-  }
-  return (vec[1:(l-length(subvec))])
-}
-
-#----------------------------------------
-#d.rescaled <- matrix(0,n,n)
-#for (i in 1:(n-1)) {
-#  a <- y[,i]
-#  for (j in (i+1):n) {
-#    b <- y[,j]
-#    d.rescaled[i,j] <- cor.test(a,b,method="kendall")$est
-#  }
-#}
-#d.rescaled <- abs(t(d.rescaled)+d.rescaled)
-#----------------------------------------

@@ -70,7 +70,7 @@ total.var <- get.var(y[,v])
 
 for (i in 1:(n-1)) {
 
-  if ( m[i,1]<0 && m[i,2]<0 ) {
+  if ( m[i, 1] < 0 && m[i, 2] < 0 ) {
     within.var[i] <- 0
     total.var[i] <- 1  # want the ratio to be 0
   }
