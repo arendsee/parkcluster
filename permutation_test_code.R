@@ -100,7 +100,7 @@ get.metric <- function(method){
 
 
 #----------------------------------------------------------------------
-permutation_function <- function(m, i, y, metric, ntrials=ntrials){
+permutation.function <- function(m, i, y, metric, ntrials=ntrials){
     left.branch  <- find.leaves(m,i,1)
     right.branch <- find.leaves(m,i,2)
     branch       <- c(left.branch,right.branch) 
@@ -116,7 +116,7 @@ permutation_function <- function(m, i, y, metric, ntrials=ntrials){
 
 
 #----------------------------------------------------------------------
-get_hclust <- function(y, method="average") {
+get.hclust <- function(y, method="average") {
     hclust(dist(t(y)), method=method)
 }
 
@@ -134,7 +134,7 @@ calculate.cluster.pvalues <- function(y, hcl,  method=1, ntrials=100){
             within.var[i] <- 0
             total.var[i] <- 1  # want the ratio to be 0
         } else {
-            pv[i] <- permutation_function(m, i, y, metric, ntrials)
+            pv[i] <- permutation.function(m, i, y, metric, ntrials)
         }
     }
     pv
