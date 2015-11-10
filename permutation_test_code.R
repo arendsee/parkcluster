@@ -24,6 +24,11 @@
 source("subroutines.R")
 require(MASS)
 
+
+##Must choose the proper method (Trace or Singular Value Decomposition), as described in the paper.
+method <- 2 # 1: trace; 2: product of singular values
+
+
 ##Example Data Set
 random.samples <- 100
 
@@ -35,18 +40,20 @@ random.samples <- 100
   plot(y[1,],y[2,],xlab="x",ylab="y",type="n")
   text(y[1,],y[2,],labels=as.character(1:(dim(y)[2])))
 
-  plot(hclust(dist(t(y)),method="ave"))
+  plot(hclust(dist(t(y)), method="ave"))
 #----------------------------------------------------------------------
 
-num.genes <- dim(y)[1]      # each row is for a gene
-n <- dim(y)[2]              # each column is for a patient
+n <- ncol(y) # each column represents one patient
 d <- matrix(0,n,n)
 
 
 hcl <- hclust(dist(t(y)), method="average")
-m <- hcl$merge	# (n-1)x2 matrix. Row i describes the merging of clusters at step i of the clustering
 
-v <- hcl$order	# a vector giving the permuation of the original observations suitable for plotting.
+# (n-1)x2 matrix. Row i describes the merging of clusters at step i of the clustering
+m <- hcl$merge
+
+# a vector giving the permutation of the original observations suitable for plotting.
+v <- hcl$order	
 
 #----------------------------------------------------------------------
 # Find x-coordinates of labels.  Start building this information from
@@ -57,15 +64,9 @@ pv <- within.var <- rep(0,(n-1))
 total.var <- get.var(y[,v])
 
 
-
-
 #----------------------------------------------------------------------
 #          M  A  I  N     L  O  O  P
 #----------------------------------------------------------------------
-
-##Must choose the proper method (Trace or Singular Value Decomposition), as described in the paper.
-
-method <- 2 # 1: trace; 2: product of singular values
 
 for (i in 1:(n-1)) {
 

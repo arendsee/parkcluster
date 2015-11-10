@@ -26,14 +26,13 @@ get.coord <- function(m,v,x.coord,n) {
   for (i in 1:(n-1))  {
     t1 <- m[i,1]
     t2 <- m[i,2]
-    if (t1 < 0) { x1 <- sort.list(v==-t1)[n] }
-    else { x1 <- x.coord[t1] }
-    if (t2 < 0) { x2 <- sort.list(v==-t2)[n] }
-    else { x2 <- x.coord[t2] }
-    x.coord[i] <- (x1+x2)/2
+    x1 <- if (t1 < 0) which(v == -t1) else x1 <- x.coord[t1]
+    x2 <- if (t2 < 0) which(v == -t2) else x2 <- x.coord[t2]
+    x.coord[i] <- (x1 + x2) / 2
   }
-  return (x.coord)
+  x.coord
 }
+
 
 #----------------------------------------------------------------------
 # Given a tree ($merge) and index (ith splitting from the bottom) and 
@@ -80,9 +79,9 @@ find.nodes <- function(tree,i,pv.cutoff) {
 
 #----------------------------------------------------------------------
 get.var <- function (y1) {
-  if (!is.matrix(y1)) { mu <- y1 }  # there is only element; apply doesn't work
-    else { mu <- apply(y1,1,mean) }
-  return ( (y1 - mu) %*% t(y1 - mu) )
+  mu <- if(!is.matrix(y1)) y1 else rowMeans(y1)
+  y1.var <- (y1 - mu) %*% t(y1 - mu)
+  y1.var
 }
 
 #----------------------------------------------------------------------
