@@ -1,40 +1,32 @@
-## R Code for permuation based test for determining the significance of
-## clusters as described in:
-
-## Park, P.J., Manjourides, J., Bonetti, M., and Pagano, M.
-## A permutation test for determining significance of clusters with
-## applications to spatial and gene expression data.
-## Journal of Computational Statistics and Data Analysis. 53:4290-4300, 2009.
-
 ## Copyright 2001,2009
 ## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
 ## the Free Software Foundation, either version 3 of the License, or
 ## (at your option) any later version.
-
+##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
-
+##
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-## -------------------------------------------------------------------
-## This code was refactored by Zebulun Arendsee <arendsee@iastate.edu>
-## -------------------------------------------------------------------
-
-
 
 # =====================================================================
 # Exported Functions
 # =====================================================================
 
-phclust_pvalues <- function(x, hcl=NULL, method='svd', ntrials=100){
-    if(is.null(hcl)){
-        hcl <- phclust(x)
-    }
+#' Calculate p-values for each branch in the tree
+#' 
+#' @export
+#' @param x A data.frame or matrix with one row for each individual
+#' @param hcl A "hclust" distance object, it will be created if missing.
+#' @param method Either 'trace' or 'svd', see Park 2009
+#' @param ntrials The number of simulations to use for predicting branch confidence
+#' @return A vector of p-values
+#' @examples
+#' phclust_pvalues(iris[1:3], ntrials=10)
+phclust_pvalues <- function(x, hcl=phclust(x), method='svd', ntrials=100){
     n <- nrow(x)
     v <- hcl$order
     m <- hcl$merge
@@ -53,6 +45,19 @@ phclust_pvalues <- function(x, hcl=NULL, method='svd', ntrials=100){
 }
 
 
+#' Plot the hierarchical cluster significance tree
+#'
+#' @export
+#' @param x A data.frame, matrix, or hclust object
+#' @param pv A vector of p-values, an output of phclust_pvalues
+#' @param group A factor defining a hypothesized group, these groups will be colored on the tree, but will not affect the main algorithm
+#' @param cutoff Minimum p-value required to resolved a branch
+#' @param show.pval Whether to show the branch p-values on the tree
+#' @param ... Arguments that will be passed to phclust_pvalues (ignored if pv is given)
+#' @return A tree plot
+#' @examples
+#' phclust_plot(cars)
+#' phclust_plot(iris[1:3], group=iris$Species, cutoff=0.1, ntrials=10)
 phclust_plot <- function(x, pv=NULL, group=NULL, cutoff=1, show.pval=TRUE, ...){
     if(class(x) == 'hclust'){
         hcl <- x

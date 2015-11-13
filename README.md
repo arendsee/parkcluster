@@ -8,14 +8,10 @@ I have simply refactered it.
 
 # Example
 ```
-source('permutation_test_code.R')
+library(parkcluster)
 
-y <- build.sample.dataset()
-plot_cluster(y)
+phclust_plot(cars)
 
-hcl <- get.hclust(y)
-plot(hcl)
-
-pvalues <- calculate.cluster.pvalues(y, hcl, method=2)
-plot_confidence_tree(hcl, pvalues)
+d <- iris[5*(1:30), ]
+phclust_plot(d[1:4], group=d$Species, cutoff=0.1, ntrials=1000)
 ```
