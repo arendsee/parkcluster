@@ -6,9 +6,19 @@ Park, P. J., Manjourides, J., Bonetti, M., & Pagano, M. (2009). A permutation te
 
 I have simply refactered it.
 
+# Installation
+
+```
+library(devtools)
+install_github('zbwrnz/parkcluster')
+```
+
 # Example
 ```
 library(parkcluster)
+
+?phcluster_plot
+?phcluster_pvalues
 
 phclust_plot(cars)
 
