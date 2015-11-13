@@ -31,11 +31,10 @@
 # Exported Functions
 # =====================================================================
 
-phclust <- function(x, method="average") {
-    hclust(dist(x), method=method)
-}
-
-phclust_pvalues <- function(x, hcl=phclust(x), method=2, ntrials=100){
+phclust_pvalues <- function(x, hcl=NULL, method=2, ntrials=100){
+    if(is.null(hcl)){
+        hcl <- phclust(x)
+    }
     n <- nrow(x)
     v <- hcl$order
     m <- hcl$merge
@@ -53,12 +52,20 @@ phclust_pvalues <- function(x, hcl=phclust(x), method=2, ntrials=100){
     pv
 }
 
-phclust_plot <- function(x, pv=NULL, adjusted=FALSE, show.pval=!adjusted){
+
+phclust_plot <- function(x, pv=NULL, group=NULL, adjusted=FALSE, show.pval=!adjusted, ...){
 
     if(class(x) == 'hclust'){
         hcl <- x
+        if(is.null(pv)){
+            stop('Must provide pv vector if x is an hclust object')
+        }
     } else {
         hcl <- phclust(x)
+    }
+
+    if(is.null(pv)){
+        pv <- phclust_pvalues(x, hcl=hcl, ...)
     }
 
     # (n-1)x2 matrix. Row i describes the merging of clusters at step i of the clustering
@@ -81,11 +88,11 @@ phclust_plot <- function(x, pv=NULL, adjusted=FALSE, show.pval=!adjusted){
     }
 
     # Adjust branch length according to p-value
-    if(adjusted && !is.null(pv)){
+    if(adjusted){
         pv.cutoff <- 0.05 / (n-1)
         for (i in 1:length(hcl$height)) {
             if (pv[i] > pv.cutoff) {
-                v <- c(i, find_nodes(hcl$merge, i, pv.cutoff))
+                v <- c(i, find_nodes(hcl$merge, pv, i, pv.cutoff))
                 for (j in 1:length(v)) {
                     hcl$height[v[j]] <- min(hcl$height[v])
                 }
@@ -93,10 +100,16 @@ phclust_plot <- function(x, pv=NULL, adjusted=FALSE, show.pval=!adjusted){
         }
     }
 
-    plot(hcl, axes=TRUE, xlab="", ylab=NULL, ann=FALSE)
+    if(!is.null(group)){
+        group <- factor(group)
+        col <- rainbow(nlevels(group))[group[v]]
+    } else {
+        col <- 'black'
+    }
+    plot(hcl, axes=TRUE, xlab="", ylab=NULL, ann=FALSE, col=col)
 
     # Show p-value next to each node
-    if(show.pval && !is.null(pv)){
+    if(show.pval){
         h.inc <- max(hcl$height) / n
         for (i in 1:(n-1)) {
             if (m[i,1]>0 || m[i,2]>0) {
@@ -111,6 +124,10 @@ phclust_plot <- function(x, pv=NULL, adjusted=FALSE, show.pval=!adjusted){
 # =====================================================================
 # Internal Functions
 # =====================================================================
+
+phclust <- function(x, method="average") {
+    hclust(dist(x), method=method)
+}
 
 #----------------------------------------------------------------------
 # Given a tree ($merge) and index (ith splitting from the bottom) and 
@@ -141,7 +158,7 @@ find_leaves <- function (tree,i,side) {
 
 
 #----------------------------------------------------------------------
-find_nodes <- function(tree,i,pv.cutoff) {
+find_nodes <- function(tree, i, pv, pv.cutoff) {
     v <- tree[i,]
     j <- 1
     l <- 2
