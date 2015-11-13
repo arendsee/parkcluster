@@ -31,7 +31,7 @@
 # Exported Functions
 # =====================================================================
 
-phclust_pvalues <- function(x, hcl=NULL, method=2, ntrials=100){
+phclust_pvalues <- function(x, hcl=NULL, method='svd', ntrials=100){
     if(is.null(hcl)){
         hcl <- phclust(x)
     }
@@ -186,10 +186,10 @@ get_var <- function (x1) {
 get_metric <- function(method){
     switch(
         method,
-        function(V) { # 1) Trace
+        trace = function(V) { # 1) Trace
             sum(diag(V))
         },
-        function(V) { # 2) Product of singular values
+        svd = function(V) { # 2) Product of singular values
             sv <- svd(V)$d
             sum(log(sv[which(sv > sv[1] * 1e-8)]))
         }
