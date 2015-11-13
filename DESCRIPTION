@@ -1,0 +1,19 @@
+Package: parkcluster
+Title: Park's Cluster Significance Algorithm
+Version: 0.1
+Authors@R: person("Zebulun", "Arendsee", email = "arendsee@iastate.edu", role = c("aut", "cre"))
+Description: Permutation based test for determining the significance of
+    clusters. For a full descrition of the algorithm, read the original paper:
+    "A permutation test for determining significance of clusters with
+    applications to spatial and gene expression data" Journal of Computational
+    Statistics and Data Analysis. This package is a refactored implementation
+    of Park's code. The alogorithm is unchaged. But the interface is rebuilt
+    and the plotting functions modified. If you use this package, please cite
+    Park et al.
+Depends:
+    R (>= 3.2.2),
+    dendextend (>= 1.1.2),
+    magrittr (>= 1.5)
+License: GNU GPL
+LazyData: true
+RoxygenNote: 5.0.1
