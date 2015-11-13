@@ -8,13 +8,13 @@ I have simply refactered it.
 
 # Installation
 
-```
+```R
 library(devtools)
 install_github('zbwrnz/parkcluster')
 ```
 
 # Example
-```
+```R
 library(parkcluster)
 
 ?phcluster_plot
