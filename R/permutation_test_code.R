@@ -53,8 +53,7 @@ phclust_pvalues <- function(x, hcl=NULL, method='svd', ntrials=100){
 }
 
 
-phclust_plot <- function(x, pv=NULL, group=NULL, adjusted=FALSE, show.pval=!adjusted, ...){
-
+phclust_plot <- function(x, pv=NULL, group=NULL, cutoff=1, show.pval=TRUE, ...){
     if(class(x) == 'hclust'){
         hcl <- x
         if(is.null(pv)){
@@ -77,48 +76,37 @@ phclust_plot <- function(x, pv=NULL, group=NULL, adjusted=FALSE, show.pval=!adju
     # number of observations
     n <- length(v) 
 
-    # Find x-coordinates of labels. 
-    x.c <- rep(0,n-1)
-    for (i in 1:(n-1)){
-        t1 <- m[i,1]
-        t2 <- m[i,2]
-        x1 <- if (t1 < 0) which(v == -t1) else x1 <- x.c[t1]
-        x2 <- if (t2 < 0) which(v == -t2) else x2 <- x.c[t2]
-        x.c[i] <- (x1 + x2) / 2
-    }
-
     # Adjust branch length according to p-value
-    if(adjusted){
-        pv.cutoff <- 0.05 / (n-1)
-        for (i in 1:length(hcl$height)) {
-            if (pv[i] > pv.cutoff) {
-                v <- c(i, find_nodes(hcl$merge, pv, i, pv.cutoff))
-                for (j in 1:length(v)) {
-                    hcl$height[v[j]] <- min(hcl$height[v])
-                }
-            }
-        }
+    for (i in which(pv > cutoff)) {
+        nodes <- c(i, find_nodes(m, i, pv, cutoff))
+        str(nodes)
+        hcl$height[nodes] <- min(hcl$height[nodes])
     }
 
-    if(!is.null(group)){
-        group <- factor(group)
-        col <- rainbow(nlevels(group))[group[v]]
-    } else {
-        col <- 'black'
-    }
-    plot(hcl, axes=TRUE, xlab="", ylab=NULL, ann=FALSE, col=col)
+    col <- if(is.null(group)) 1 else as.numeric(group) 
+    tre <- hcl %>%
+        as.dendrogram %>%
+        set('labels_col', col) %>%
+        plot
 
     # Show p-value next to each node
     if(show.pval){
-        h.inc <- max(hcl$height) / n
-        for (i in 1:(n-1)) {
-            if (m[i,1]>0 || m[i,2]>0) {
-                text(x.c[i] + 1.2, hcl$h[i] + h.inc, pv[i], cex=.7)
-            }
+        # Find x-coordinates of labels. 
+        x.c <- rep(0,n-1)
+        for (i in 1:(n-1)){
+            t1 <- m[i,1]
+            t2 <- m[i,2]
+            x1 <- if (t1 < 0) which(v == -t1) else x.c[t1]
+            x2 <- if (t2 < 0) which(v == -t2) else x.c[t2]
+            x.c[i] <- (x1 + x2) / 2
         }
+        # Add p-values to significant branches
+        i <- (m[, 1] > 0 | m[, 2] > 0) & pv <= cutoff
+        xpos <- x.c[i] + 1.2
+        ypos <- hcl$height[i] + max(hcl$height) / n
+        text(xpos, ypos, pv[i], cex=.7)
     }
 }
-
 
 
 # =====================================================================
@@ -158,12 +146,12 @@ find_leaves <- function (tree,i,side) {
 
 
 #----------------------------------------------------------------------
-find_nodes <- function(tree, i, pv, pv.cutoff) {
+find_nodes <- function(tree, i, pv, cutoff) {
     v <- tree[i,]
     j <- 1
     l <- 2
     while (j<=l){
-        if ((v[j] > 0) && (pv[v[j]] > pv.cutoff)) {
+        if ((v[j] > 0) && (pv[v[j]] > cutoff)) {
             v <- c(v,tree[v[j],])
         }
         j <- j+1
