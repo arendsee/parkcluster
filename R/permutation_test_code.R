@@ -22,11 +22,11 @@
 #' @param x A data.frame or matrix with one row for each individual
 #' @param hcl A "hclust" distance object, it will be created if missing.
 #' @param method Either 'trace' or 'svd', see Park 2009
-#' @param ntrials The number of simulations to use for predicting branch confidence
+#' @param nperm The number of permutations to use for predicting branch confidence
 #' @return A vector of p-values
 #' @examples
 #' phclust_pvalues(iris[1:3], ntrials=10)
-phclust_pvalues <- function(x, hcl=phclust(x), method='svd', ntrials=100){
+phclust_pvalues <- function(x, hcl=phclust(x), method='svd', nperm=100){
     n <- nrow(x)
     v <- hcl$order
     m <- hcl$merge
