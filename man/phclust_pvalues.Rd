@@ -4,7 +4,7 @@
 \alias{phclust_pvalues}
 \title{Calculate p-values for each branch in the tree}
 \usage{
-phclust_pvalues(x, hcl = phclust(x), method = "svd", ntrials = 100)
+phclust_pvalues(x, hcl = phclust(x), method = "svd", nperm = 100)
 }
 \arguments{
 \item{x}{A data.frame or matrix with one row for each individual}
@@ -13,7 +13,7 @@ phclust_pvalues(x, hcl = phclust(x), method = "svd", ntrials = 100)
 
 \item{method}{Either 'trace' or 'svd', see Park 2009}
 
-\item{ntrials}{The number of simulations to use for predicting branch confidence}
+\item{nperm}{The number of permutations to use for predicting branch confidence}
 }
 \value{
 A vector of p-values
@@ -22,6 +22,6 @@ A vector of p-values
 Calculate p-values for each branch in the tree
 }
 \examples{
-phclust_pvalues(iris[1:3], ntrials=10)
+phclust_pvalues(iris[1:3], nperm=10)
 }
 

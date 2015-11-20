@@ -1,7 +1,8 @@
 Package: parkcluster
 Title: Park's Cluster Significance Algorithm
 Version: 0.1
-Authors@R: person("Zebulun", "Arendsee", email = "arendsee@iastate.edu", role = c("aut", "cre"))
+Author: Zebulun Arendsee
+Maintainer: Zebulun Arendsee <arendsee@iastate.edu>
 Description: Permutation based test for determining the significance of
     clusters. For a full descrition of the algorithm, read the original paper:
     "A permutation test for determining significance of clusters with
@@ -16,4 +17,4 @@ Depends:
     magrittr (>= 1.5)
 License: GNU GPL
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 5.0.0

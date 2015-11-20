@@ -26,5 +26,5 @@ d <- iris[5*(1:30), c('Sepal.Length', 'Sepal.Width', 'Species')]
 
 plot(d[[1]], d[[2]], col=as.numeric(d$Species))
 
-phclust_plot(d[1:2], group=d$Species, cutoff=0.1, ntrials=1000)
+phclust_plot(d[1:2], group=d$Species, cutoff=0.1, nperm=1000)
 ```

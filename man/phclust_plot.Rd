@@ -28,6 +28,6 @@ Plot the hierarchical cluster significance tree
 }
 \examples{
 phclust_plot(cars)
-phclust_plot(iris[1:3], group=iris$Species, cutoff=0.1, ntrials=10)
+phclust_plot(iris[1:3], group=iris$Species, cutoff=0.1, nperm=10)
 }
 
