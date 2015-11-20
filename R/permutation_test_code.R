@@ -25,7 +25,7 @@
 #' @param nperm The number of permutations to use for predicting branch confidence
 #' @return A vector of p-values
 #' @examples
-#' phclust_pvalues(iris[1:3], ntrials=10)
+#' phclust_pvalues(iris[1:3], nperm=10)
 phclust_pvalues <- function(x, hcl=phclust(x), method='svd', nperm=100){
     n <- nrow(x)
     v <- hcl$order
@@ -38,7 +38,7 @@ phclust_pvalues <- function(x, hcl=phclust(x), method='svd', nperm=100){
             within.var[i] <- 0
             total.var[i] <- 1  # want the ratio to be 0
         } else {
-            pv[i] <- permutation_function(m, i, t(x), metric, ntrials)
+            pv[i] <- permutation_function(m, i, t(x), metric, nperm)
         }
     }
     pv
@@ -57,7 +57,7 @@ phclust_pvalues <- function(x, hcl=phclust(x), method='svd', nperm=100){
 #' @return A tree plot
 #' @examples
 #' phclust_plot(cars)
-#' phclust_plot(iris[1:3], group=iris$Species, cutoff=0.1, ntrials=10)
+#' phclust_plot(iris[1:3], group=iris$Species, cutoff=0.1, nperm=10)
 phclust_plot <- function(x, pv=NULL, group=NULL, cutoff=1, show.pval=TRUE, ...){
     if(class(x) == 'hclust'){
         hcl <- x
@@ -191,13 +191,13 @@ get_metric <- function(method){
 
 
 #----------------------------------------------------------------------
-permutation_function <- function(m, i, x, metric, ntrials=ntrials){
+permutation_function <- function(m, i, x, metric, nperm=nperm){
     left.branch  <- find_leaves(m,i,1)
     right.branch <- find_leaves(m,i,2)
     branch       <- c(left.branch,right.branch) 
     V0           <- get_var(x[, right.branch]) + get_var(x[, left.branch])
     V.r0         <- metric(V0)
-    V.r <- replicate(ntrials, { 
+    V.r <- replicate(nperm, { 
         v1 <- sample(branch, length(right.branch))
         V0 <- get_var(x[,v1]) + get_var(x[, setdiff(branch,v1)])
         metric(V0)
