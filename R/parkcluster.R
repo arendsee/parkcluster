@@ -9,7 +9,7 @@
 #' 
 #' @section parkcluster functions:
 #' phclust_pvalues - calculate p-values for each branch
-#' phclust_plot - plot a tree showinga clusters and branch significance
+#' phclust_plot - plot a tree showing clusters and branch significance
 #'
 #' @docType package
 #' @name parkcluster
