@@ -40,7 +40,7 @@ phclust_plot(cars)
 ## 'dendextend'
 ```
 
-![Clustering of cars dataset](figure/car-plot-1.png)
+![Clustering of cars dataset](car-plot-1.png)
 
 
 ```r
@@ -49,7 +49,7 @@ d <- iris[5*(1:30), c('Sepal.Length', 'Sepal.Width', 'Species')]
 plot(d[[1]], d[[2]], col=as.numeric(d$Species))
 ```
 
-![Iris dataset colored by species](figure/iris-plot-1.png)
+![Iris dataset colored by species](iris-plot-1.png)
 
 
 ```r
@@ -67,4 +67,4 @@ phclust_plot(d[1:2], group=d$Species, cutoff=0.1, nperm=1000)
 ##  int [1:5] 17 6 14 1 13
 ```
 
-![Clustering of iris dataset](figure/iris-phclust-1.png)
+![Clustering of iris dataset](iris-phclust-1.png)
