@@ -2,3 +2,4 @@
 
 export(phclust_plot)
 export(phclust_pvalues)
+importFrom(magrittr,"%>%")

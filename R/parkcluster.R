@@ -1,3 +1,8 @@
+#' @importFrom magrittr "%>%"
+utils::globalVariables(c("%>%", "."))
+
+NULL
+
 #' parkcluster: A permutation test for significance of clusters
 #'
 #' For information on the algorithm, read this paper:
@@ -13,5 +18,5 @@
 #'
 #' @docType package
 #' @name parkcluster
+
 NULL
-#> NULL

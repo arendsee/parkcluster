@@ -91,7 +91,7 @@ phclust_plot <- function(x, pv=NULL, group=NULL, cutoff=1, show.pval=TRUE, ...){
     col <- if(is.null(group)) 1 else as.numeric(group) 
     tre <- hcl %>%
         as.dendrogram %>%
-        set('labels_col', col) %>%
+        dendextend::set('labels_col', col) %>%
         plot
 
     # Show p-value next to each node

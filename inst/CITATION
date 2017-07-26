@@ -1,0 +1,20 @@
+citHeader("To cite in publications use:")
+
+citEntry(entry = "Article",
+  title        = "A permutation test for determining significance of clusters with applications to spatial and gene expression data",
+  author       = personList(as.person("PJ Park"), as.person("J Manjourides"), as.person("M Bonetti"), as.person("M Pagano")),
+  doi          = "10.1016/j.csda.2009.05.031",
+  number       = "12",
+  volume       = "53",
+  month        = "October",
+  year         = "2009",
+  journal      = "Computational statistics & data analysis",
+  issn         = "0167-9473",
+  pages        = "4290--4300",
+  url          = "http://europepmc.org/articles/PMC3023458",
+  textVersion  =
+  paste("PJ Park, J Manjourides, M Bonetti, and M Pagano (2009).",
+        "A permutation test for determining significance of clusters with applications to spatial and gene expression data.",
+        "Computational statistics & data analysis, 53(12), 4290-4300.",
+        "URL http://europepmc.org/articles/PMC3023458.")
+)

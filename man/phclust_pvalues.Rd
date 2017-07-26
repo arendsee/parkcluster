@@ -24,4 +24,3 @@ Calculate p-values for each branch in the tree
 \examples{
 phclust_pvalues(iris[1:3], nperm=10)
 }
-

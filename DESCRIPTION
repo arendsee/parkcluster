@@ -1,8 +1,11 @@
 Package: parkcluster
+Type: Package
 Title: Park's Cluster Significance Algorithm
-Version: 0.1
-Author: Zebulun Arendsee
+Version: 0.1.0
+Author: Peter Park
 Maintainer: Zebulun Arendsee <arendsee@iastate.edu>
+URL: https://github.com/arendsee/parkcluster
+BugReports: https://github.com/arendsee/parkcluster/issues
 Description: Permutation based test for determining the significance of
     clusters. For a full description of the algorithm, read the original paper:
     "A permutation test for determining significance of clusters with
@@ -13,8 +16,9 @@ Description: Permutation based test for determining the significance of
     Park et al.
 Depends:
     R (>= 3.2.2),
+Imports:
     dendextend (>= 1.1.2),
     magrittr (>= 1.5)
-License: GNU GPL
+License: GPL
 LazyData: true
-RoxygenNote: 5.0.0
+RoxygenNote: 6.0.1
